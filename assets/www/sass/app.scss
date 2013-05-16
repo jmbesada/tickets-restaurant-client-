@@ -1,0 +1,109 @@
+@import 'partials/mixins';
+@import 'partials/global';
+ 
+ 
+#loginView{
+  background-color:#F3F4F8;
+  #loginView_header{
+    background-color: #EFF1F3;
+    border-bottom: 1px solid #D0D2DB;
+    border-radius: 3px 3px 0 0;
+    color: #2C3F79;
+    display: block;
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 70px;
+    padding: 0 17px;
+    text-align: center;
+    text-shadow: 0 1px 1px #FFFFFF;
+    text-transform: uppercase;
+  }
+  
+  #loginView_remainder{
+    text-align:30px;
+    border-bottom: 1px solid #D0D2DB;
+    padding-top:30px;
+    text-align:center;
+    width:80%;
+    margin:auto;
+    margin-bottom:10px;
+    color: #2C3F79;
+    font-size:1.1em 
+  }
+  
+  #loginView_login{
+    background-image: -webkit-linear-gradient(#EF4F36, #DD2819);
+    border-color: #D3000D;
+    height:40px;
+    width:70%;
+    margin:auto;
+    margin-top:10px;
+    font-size:0.8em;
+    @include btn
+  }
+  
+  #loginView_footer{
+    background:url('../img/endered.png') no-repeat center center;
+    background-size:auto 30px;
+    padding:15px;
+  }
+  
+} 
+
+#homeView{
+  background-color:#F3F4F8;
+  #homeView_header{
+    color: #2C3F79;
+    font-size: 1.4em;
+    padding-top: 5px;
+    border-bottom: 1px solid #D9D8DF;
+    text-align:center;
+    height:70px;
+    #homeView_header_username{
+      font-size:0.7em;
+      text-align:right;
+      
+    }
+  }
+  #homeView_amount{
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #DDDDDD;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.35) inset; 
+    padding:10px;
+    height:110px;
+    color:#335F8C;
+    text-align:center;
+    #homeView_amount_1{
+       font-size:1.3em;
+       float:left;
+       position:relative;
+       top:10px;
+    }
+    #homeView_amount_2{
+       font-size:2em;
+       text-align:center;
+       line-height:90px;
+       color:#EF4F36
+    }
+  }
+  
+  #homeView_movements{
+    #homeView_movements_item{
+      border: 1px solid #D0D2DB;
+      padding:5px 10px;
+      color: #6A6D74;
+      #homeView_movements_item_concept{
+        float:left;
+        width:55%;
+      }
+      #homeView_movements_item_remainder{
+        text-align:right;
+        #homeView_movements_item_remainder_amount{
+          color:#EF4F36
+        }
+      }
+    }
+  }
+    
+}
