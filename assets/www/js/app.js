@@ -6,7 +6,7 @@
     return console.log('Phonegap framework initialized');
   });
 
-  webservicesUrl = 'http://tickets_restaurant.cloudfoundry.com';
+  webservicesUrl = 'http://192.168.0.193:8080';
 
   Ext.application({
     launch: function() {
@@ -15,6 +15,107 @@
         fullscreen: true
       });
       return console.log('Initialized the app successfully');
+    }
+  });
+
+  setup = function() {
+    Ext.Viewport.setMasked({
+      xtype: 'loadmask',
+      message: 'Cargando datos....',
+      indicator: true
+    });
+    return Ext.Viewport.setMasked(false);
+  };
+
+  login = function() {
+    var values;
+
+    values = Ext.getCmp('loginView_form').getValues();
+    if (!values.username || !values.password || !values.secretDate) {
+      return Ext.Msg.alert('Aviso del sistema', 'No has rellenado todos los campos.');
+    } else {
+      return loadData(values.username, values.password, Ext.Date.format(values.secretDate, 'dmY'));
+    }
+  };
+
+  loadData = function(username, password, secretDate) {
+    Ext.Viewport.setMasked(true);
+    return Ext.getStore('userDataStore').load({
+      callback: function(records, operation, success) {
+        Ext.Viewport.setMasked(false);
+        if (!success) {
+          return Ext.Msg.alert('Aviso del sistema', 'Ha fallado la autenticación.');
+        } else {
+          Ext.getCmp('mainView').setActiveItem(1);
+          localStorage.username = username;
+          localStorage.password = password;
+          return localStorage.secretDate = secretDate;
+        }
+      },
+      params: {
+        'username': username,
+        'password': password,
+        'date': secretDate
+      }
+    });
+  };
+
+  loadCredentials = function() {
+    if (localStorage.username) {
+      return Ext.getCmp('loginView_form').setValues({
+        'username': localStorage.username,
+        'password': localStorage.password,
+        'secretDate': Ext.Date.parse(localStorage.secretDate, 'dmY')
+      });
+    }
+  };
+
+  loadDataFromHomeView = function() {
+    if (localStorage.username) {
+      return loadData(localStorage.username, localStorage.password, localStorage.secretDate);
+    } else {
+      return Ext.getCmp('mainView').setActiveItem(0);
+    }
+  };
+
+  homeViewTpl = new Ext.XTemplate("<div id=\"homeView_amount\">\n  <span>--{username}</span>--\n  <div id=\"homeView_amount_1\">\n    SALDO<br/>DISPONIBLE\n  </div>\n  <div id=\"homeView_amount_2\">\n    {amount}\n  </div> \n</div>\n\n<div id=\"homeView_movements\">\n <tpl for=\"movements\">\n    <div id=\"homeView_movements_item\">\n      <div id=\"homeView_movements_item_concept\">\n        {concept}\n      </div>\n      <div id=\"homeView_movements_item_remainder\">\n        <span id=\"homeView_movements_item_remainder_date\">{date}</span>\n        </br>\n        <span id=\"homeView_movements_item_remainder_amount\">{amount}</span>\n      </div>\n    </div>\n    \n </tpl>\n</div>");
+
+  Ext.define('ticketsRestaurant.HomeView', {
+    extend: 'Ext.Panel',
+    xtype: 'homeView',
+    config: {
+      id: 'homeView',
+      layout: {
+        type: 'vbox'
+      },
+      items: [
+        {
+          xtype: 'titlebar',
+          title: 'Tarj. Ticket Restaurant®',
+          height: '50px',
+          layout: {
+            type: 'hbox'
+          },
+          items: [
+            {
+              xtype: 'button',
+              iconCls: 'refresh',
+              iconMask: true,
+              handler: function() {
+                return loadDataFromHomeView();
+              }
+            }
+          ]
+        }, {
+          xtype: 'dataview',
+          itemTpl: homeViewTpl,
+          store: {
+            xtype: 'userdatastore'
+          },
+          loadingText: '',
+          flex: 1
+        }
+      ]
     }
   });
 
@@ -118,66 +219,6 @@
     }
   });
 
-  setup = function() {
-    Ext.Viewport.setMasked({
-      xtype: 'loadmask',
-      message: 'Cargando datos....',
-      indicator: true
-    });
-    return Ext.Viewport.setMasked(false);
-  };
-
-  login = function() {
-    var values;
-
-    values = Ext.getCmp('loginView_form').getValues();
-    if (!values.username || !values.password || !values.secretDate) {
-      return Ext.Msg.alert('Aviso del sistema', 'No has rellenado todos los campos.');
-    } else {
-      return loadData(values.username, values.password, Ext.Date.format(values.secretDate, 'dmY'));
-    }
-  };
-
-  loadData = function(username, password, secretDate) {
-    Ext.Viewport.setMasked(true);
-    return Ext.getStore('userDataStore').load({
-      callback: function(records, operation, success) {
-        Ext.Viewport.setMasked(false);
-        if (!success) {
-          return Ext.Msg.alert('Aviso del sistema', 'Ha fallado la autenticación.');
-        } else {
-          Ext.getCmp('mainView').setActiveItem(1);
-          localStorage.username = username;
-          localStorage.password = password;
-          return localStorage.secretDate = secretDate;
-        }
-      },
-      params: {
-        'username': username,
-        'password': password,
-        'date': secretDate
-      }
-    });
-  };
-
-  loadCredentials = function() {
-    if (localStorage.username) {
-      return Ext.getCmp('loginView_form').setValues({
-        'username': localStorage.username,
-        'password': localStorage.password,
-        'secretDate': Ext.Date.parse(localStorage.secretDate, 'dmY')
-      });
-    }
-  };
-
-  loadDataFromHomeView = function() {
-    if (localStorage.username) {
-      return loadData(localStorage.username, localStorage.password, localStorage.secretDate);
-    } else {
-      return Ext.getCmp('mainView').setActiveItem(0);
-    }
-  };
-
   Ext.define('ticketsRestaurant.MovementModel', {
     extend: 'Ext.data.Model',
     config: {
@@ -209,6 +250,7 @@
 
   Ext.define('ticketsRestaurant.UserDataStore', {
     extend: 'Ext.data.Store',
+    xtype: 'userdatastore',
     config: {
       model: 'ticketsRestaurant.UserDataModel',
       autoLoad: false,
@@ -227,47 +269,6 @@
         timeout: 90000,
         url: webservicesUrl + "/robotController/getData"
       }
-    }
-  });
-
-  Ext.create('ticketsRestaurant.UserDataStore');
-
-  homeViewTpl = new Ext.XTemplate("<div id=\"homeView_amount\">\n  <span>--{username}</span>--\n  <div id=\"homeView_amount_1\">\n    SALDO<br/>DISPONIBLE\n  </div>\n  <div id=\"homeView_amount_2\">\n    {amount}\n  </div> \n</div>\n\n<div id=\"homeView_movements\">\n <tpl for=\"movements\">\n    <div id=\"homeView_movements_item\">\n      <div id=\"homeView_movements_item_concept\">\n        {concept}\n      </div>\n      <div id=\"homeView_movements_item_remainder\">\n        <span id=\"homeView_movements_item_remainder_date\">{date}</span>\n        </br>\n        <span id=\"homeView_movements_item_remainder_amount\">{amount}</span>\n      </div>\n    </div>\n    \n </tpl>\n</div>");
-
-  Ext.define('ticketsRestaurant.HomeView', {
-    extend: 'Ext.Panel',
-    xtype: 'homeView',
-    config: {
-      id: 'homeView',
-      layout: {
-        type: 'vbox'
-      },
-      items: [
-        {
-          xtype: 'titlebar',
-          title: 'Tarj. Ticket Restaurant®',
-          height: '50px',
-          layout: {
-            type: 'hbox'
-          },
-          items: [
-            {
-              xtype: 'button',
-              iconCls: 'refresh',
-              iconMask: true,
-              handler: function() {
-                return loadDataFromHomeView();
-              }
-            }
-          ]
-        }, {
-          xtype: 'dataview',
-          itemTpl: homeViewTpl,
-          store: Ext.getStore('userDataStore'),
-          loadingText: '',
-          flex: 1
-        }
-      ]
     }
   });
 

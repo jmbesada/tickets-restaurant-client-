@@ -53,7 +53,8 @@ Ext.define 'ticketsRestaurant.HomeView',
       {
         xtype:'dataview'
         itemTpl:homeViewTpl
-        store:Ext.getStore('userDataStore')
+        store:
+          xtype:'userdatastore'
         loadingText:''
         flex:1
       }

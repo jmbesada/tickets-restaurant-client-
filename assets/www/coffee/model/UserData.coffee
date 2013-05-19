@@ -30,6 +30,7 @@ Ext.define 'ticketsRestaurant.UserDataModel',
 
 Ext.define 'ticketsRestaurant.UserDataStore',
   extend:'Ext.data.Store'
+  xtype:'userdatastore'
   config:
     model:'ticketsRestaurant.UserDataModel'
     autoLoad:false
@@ -48,4 +49,4 @@ Ext.define 'ticketsRestaurant.UserDataStore',
       url:webservicesUrl+"/robotController/getData"
 
 
-Ext.create 'ticketsRestaurant.UserDataStore'
+#Ext.create 'ticketsRestaurant.UserDataStore'
