@@ -10,7 +10,7 @@ public class MainApp extends DroidGap {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		this.loadUrl("file:///android_asset/www/index.html");   
+		this.loadUrl("file:///android_asset/www/index.html");    
 	}
 
 }
