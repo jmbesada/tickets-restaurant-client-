@@ -6,7 +6,7 @@
     return console.log('Phonegap framework initialized');
   });
 
-  webservicesUrl = 'http://192.168.0.193:8080';
+  webservicesUrl = 'http://tickets_restaurant.cloudfoundry.com';
 
   Ext.application({
     launch: function() {
